@@ -15,6 +15,7 @@ use PagSeguro\Domains\Requests\Payment as Payment;
 use App\User;
 use App\Produto;
 use PagSeguro\Services\Transactions as Transactions;
+use Illuminate\Support\Facades\Validator;
 
 try {
     PagSeguro::initialize();
@@ -32,10 +33,10 @@ try {
     );
 }
 
-PagSeguro::setEnviroment(env('PAGSEGURO_AMBIENTE'));
-PagSeguro::setAccountCredentials(env('PAGSEGURO_EMAIL'), env('PAGSEGURO_TOKEN'));
-PagSeguro::setCharset('UTF-8');
-PagSeguro::setLog(true, '../storage/logs/PagSeguro.log');
+PagSeguroConfig::setEnvironment(env('PAGSEGURO_AMBIENTE'));
+PagSeguroConfig::setAccountCredentials(env('PAGSEGURO_EMAIL'), env('PAGSEGURO_TOKEN'));
+PagSeguroConfig::setCharset('UTF-8');
+PagSeguroConfig::setLog(true, '../storage/logs/PagSeguro.log');
 
 
 class PagSeguroController extends BaseController
@@ -83,7 +84,7 @@ class PagSeguroController extends BaseController
         $pagamento->addItems()->withParameters(
             $produto->id,
             $produto->descricao,
-            $produto->quantidade,
+            $request->quantidade,
             $produto->preco
         );
 
@@ -92,7 +93,7 @@ class PagSeguroController extends BaseController
 
         try {
             $onlyCheckoutCode = true;
-            $resultado = $pagamento->register(PagSeguro::getAccountCredentials(), $onlyCheckoutCode);
+            $resultado = $pagamento->register(PagSeguroConfig::getAccountCredentials(), $onlyCheckoutCode);
             $codigo = $resultado->getCode();
             return $this::enviarRespostaSucesso($codigo, 'Código gerado com sucesso');
         } catch (Exception $e) {
@@ -106,7 +107,7 @@ class PagSeguroController extends BaseController
         $dataInicial = date("Y-m-d\TG:i", strtotime("-1 months"));
 
         $options = [
-            'inicital_date' => $dataInicial,
+            'initial_date' => $dataInicial,
             'page' => 1,
             'max_per_page' => 900
         ];
