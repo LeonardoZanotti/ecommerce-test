@@ -2,7 +2,7 @@
 
 Testando implementação das APIs do PagSeguro e do PicPay
 
-# Requisitos
+## Requisitos
 * Estou me baseando em usuários Linux, então seria bom usá-lo. Para Windows os processos são diferentes.
 * Laravel 5.7.29
 * Composer
@@ -57,10 +57,10 @@ npm run dev
 // O site estará em localhost:3000
 ```
 
-# Testes
+### Testes
 Usei o [postman](https://www.postman.com/) para testar o projeto mas o [Insomnia](https://insomnia.rest/) também deve servir.
 
-## Observações:
-* Essa API não considera os adicionais que o PagSeguro cobra por utilizar o método de pagamento 'boleto' ou por parcelar o pagamento via cartão de crédito
+### Observações:
+* Essa API não considera os adicionais que o PagSeguro cobra por utilizar o método de pagamento 'boleto' ou por parcelar o pagamento via cartão de crédito.
 
 ## Leonardo Zanotti
