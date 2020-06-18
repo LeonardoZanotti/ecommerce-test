@@ -60,4 +60,7 @@ npm run dev
 # Testes
 Usei o [postman](https://www.postman.com/) para testar o projeto mas o [Insomnia](https://insomnia.rest/) também deve servir.
 
+## Observações:
+* Essa API não considera os adicionais que o PagSeguro cobra por utilizar o método de pagamento 'boleto' ou por parcelar o pagamento via cartão de crédito
+
 ## Leonardo Zanotti

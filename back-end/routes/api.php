@@ -38,6 +38,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // PAGSEGURO
     Route::post('novaCompra', 'API\PagSeguroController@checkout');
+    Route::post('Compra', 'API\PagSeguroController@transaction');
     Route::get('Compras', 'API\PagSeguroController@transactions');
 
     Route::middleware(['admin'])->group(function () {

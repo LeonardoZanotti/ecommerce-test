@@ -60,8 +60,7 @@ class PagSeguroController extends BaseController
             // 'items.*.quantidade' => 'required|integer',
             // 'user_id' => 'required|integer'
             'item_id' => 'required|integer',
-            'quantidade' => 'required|integer',
-            'user_id' => 'required|integer'
+            'quantidade' => 'required|integer'
         ]);
 
         if($validator->fails()) {
@@ -100,6 +99,50 @@ class PagSeguroController extends BaseController
             return $this::enviarRespostaErro('Ocorreu um erro gerando o código', $e->getMessage());
         }
     }
+
+    public function transaction(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'codigo' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this::enviarRespostaErro('Erros de validação!');
+        }
+
+        $user = $request->user();
+
+        $dataInicial = date("Y-m-d\TG:i", strtotime("-1 months"));
+
+        $options = [
+            'initial_date' => $dataInicial,
+            'page' => 1,
+            'max_per_page' => 900
+        ];
+
+        try {
+            $transacao = Transactions\Search\Code::search(PagSeguroConfig::getAccountCredentials(), $request->codigo, $options);
+
+            $lista = collect();
+            if ($transacao) {
+                $data = $transacao->getDate();
+                $codigoTrans = $transacao->getCode();
+                $valor = $transacao->getGrossAmount();
+                $status = $this::statusInfo[intval($transacao->getStatus()) -1];
+
+                $trans = collect([
+                    'data' => $data,
+                    'codigoTrans' => $codigoTrans,
+                    'valor' => $valor,
+                    'status' => $status
+                ]);
+                $lista = $lista->push($trans);
+            }
+            
+            return $this::enviarRespostaSucesso($lista, 'Transação encontrada!');
+        } catch (Exception $e) {
+            return $this::enviarRespostaErro('Ocorreu um erro buscando essa transação', $e->getMessage());
+        }
+    } 
 
     public function transactions(Request $request) {
         $user = $request->user();
