@@ -40,6 +40,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('novaCompra', 'API\PagSeguroController@checkout');
     Route::post('Compra', 'API\PagSeguroController@transaction');
     Route::get('Compras', 'API\PagSeguroController@transactions');
+    Route::post('cancelarCompra', 'API\PagSeguroController@cancel');
+    Route::post('reembolsarCompra', 'API\PagSeguroController@refund');
+    Route::post('notificarCompra', 'API\PagSeguroController@notification');
+
 
     Route::middleware(['admin'])->group(function () {
         //CRUD PRODUTOS

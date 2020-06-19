@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5820828bd1ef66d7a64e49e1babcc5c8",
+    "content-hash": "7d6c6725d19bffd45470d231c21d5a73",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -1392,6 +1392,38 @@
                 "psr-3"
             ],
             "time": "2018-11-05T09:00:11+00:00"
+        },
+        {
+            "name": "muvasco/picpay-php-sdk",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/muvasco/picpay-php-sdk.git",
+                "reference": "8ecd1329b198202beff892be24d75958d26e594b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/muvasco/picpay-php-sdk/zipball/8ecd1329b198202beff892be24d75958d26e594b",
+                "reference": "8ecd1329b198202beff892be24d75958d26e594b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Picpay": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "SDK PHP para integração com a API E-Commerce PicPay",
+            "homepage": "https://github.com/muvasco/picpay-php-sdk",
+            "time": "2020-03-31T19:38:45+00:00"
         },
         {
             "name": "nesbot/carbon",

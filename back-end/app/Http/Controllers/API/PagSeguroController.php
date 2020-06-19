@@ -1,7 +1,8 @@
 <?php
 
-// https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html?code=
+// https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html?code=6EC41F9F91919A6774BA6F8B6F73EC41
 // User comprador de teste e fazer a compra
+// https://github.com/muvasco/picpay-php-sdk
 
 namespace App\Http\Controllers\API;
 
@@ -110,6 +111,7 @@ class PagSeguroController extends BaseController
         }
 
         $user = $request->user();
+        $codigoUser = $user->codigo;
 
         $dataInicial = date("Y-m-d\TG:i", strtotime("-1 months"));
 
@@ -128,12 +130,34 @@ class PagSeguroController extends BaseController
                 $codigoTrans = $transacao->getCode();
                 $valor = $transacao->getGrossAmount();
                 $status = $this::statusInfo[intval($transacao->getStatus()) -1];
+                
+                $codigoRef = $transacao->getReference();
+                if ($codigoRef != $codigoUser) {
+                    return $this::enviarRespostaErro('Ocorreu um erro listando a transação, código de usuário inválido');
+                }
+
+                $itemsObj = $transacao->getItems();
+                $items = collect();
+                foreach ($itemsObj as $item) {
+                    $id = $item->getId();
+                    $descricao = $item->getDescription();
+                    $quantidade = $item->getQuantity();
+                    $valor = $item->getAmount();
+                    $itemsCollect = collect([
+                        'id' => $id,
+                        'descricao' => $descricao,
+                        'quantidade' => $quantidade,
+                        'valor' => $valor
+                    ]);
+                    $items = $items->push($itemsCollect);
+                }
 
                 $trans = collect([
                     'data' => $data,
                     'codigoTrans' => $codigoTrans,
                     'valor' => $valor,
-                    'status' => $status
+                    'status' => $status,
+                    'items' => $items
                 ]);
                 $lista = $lista->push($trans);
             }
@@ -143,6 +167,62 @@ class PagSeguroController extends BaseController
             return $this::enviarRespostaErro('Ocorreu um erro buscando essa transação', $e->getMessage());
         }
     } 
+
+    public function cancel(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'codigo' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this::enviarRespostaErro('Erros de validação!');
+        }
+
+        $user = $request->user();
+        $codigoUser = $user->codigo;
+        
+        try {
+            $transacao = Transactions\Search\Code::search(PagSeguroConfig::getAccountCredentials(), $request->codigo);
+            
+            $codigoRef = $transacao->getReference();
+            if ($codigoRef != $codigoUser) {
+                return $this::enviarRespostaErro('Ocorreu um erro listando a transação, código de usuário inválido');
+            }
+            
+            $cancel = Transactions\Cancel::create(PagSeguroConfig::getAccountCredentials(), $request->codigo);
+            
+            return $this::enviarRespostaSucesso('Transação cancelada!');
+        } catch (Exception $e) {
+            return $this::enviarRespostaErro('Ocorreu um erro cancelando essa transação', $e->getMessage());       
+        }
+    }
+
+    public function refund(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'codigo' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this::enviarRespostaErro('Erros de validação!');
+        }
+
+        $user = $request->user();
+        $codigoUser = $user->codigo;
+
+        try {
+            $transacao = Transactions\Search\Code::search(PagSeguroConfig::getAccountCredentials(), $request->codigo);
+            
+            $codigoRef = $transacao->getReference();
+            if ($codigoRef != $codigoUser) {
+                return $this::enviarRespostaErro('Ocorreu um erro listando a transação, código de usuário inválido');
+            }
+            
+            $refund = Transactions\Refund::create(PagSeguroConfig::getAccountCredentials(), $request->codigo);
+            
+            return $this::enviarRespostaSucesso('Transação reembolsada!');
+        } catch (Exception $e) {
+            return $this::enviarRespostaErro('Ocorreu um erro reembolsando essa transação', $e->getMessage());       
+        }
+    }
 
     public function transactions(Request $request) {
         $user = $request->user();
@@ -181,6 +261,62 @@ class PagSeguroController extends BaseController
             return $this::enviarRespostaSucesso($lista, 'Transações listadas com sucesso!');
         } catch (Exception $e) {
             return $this::enviarRespostaErro('Ocorreu um erro listando as compras', $e->getMessage());
+        }
+    }
+
+    public function notification(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'notificationCode' => 'required',
+            'notificationType' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this::enviarRespostaErro('Erros de validação!');
+        }
+
+        try {
+            if (\PagSeguro\Helpers\Xhr::hasPost()) {
+                $transacao = Transactions\Notification::check(PagSeguroConfig::getAccountCredentials());
+            } else {
+                throw new \InvalidArgumentException($_POST);
+            }
+
+            $lista = collect();
+            if ($transacao) {
+                $data = $transacao->getDate();
+                $codigoTrans = $transacao->getCode();
+                $valor = $transacao->getGrossAmount();
+                $status = $this::statusInfo[intval($transacao->getStatus()) -1];
+                
+                $itemsObj = $transacao->getItems();
+                $items = collect();
+                foreach ($itemsObj as $item) {
+                    $id = $item->getId();
+                    $descricao = $item->getDescription();
+                    $quantidade = $item->getQuantity();
+                    $valor = $item->getAmount();
+                    $itemsCollect = collect([
+                        'id' => $id,
+                        'descricao' => $descricao,
+                        'quantidade' => $quantidade,
+                        'valor' => $valor
+                    ]);
+                    $items = $items->push($itemsCollect);
+                }
+
+                $trans = collect([
+                    'data' => $data,
+                    'codigoTrans' => $codigoTrans,
+                    'valor' => $valor,
+                    'status' => $status,
+                    'items' => $items
+                ]);
+                $lista = $lista->push($trans);
+            }
+            
+            return $this::enviarRespostaSucesso($lista, 'Transação checada!');   
+        } catch (Exception $e) {
+            return $this::enviarRespostaErro('Ocorreu um erro checando a transação', $e->getMessage());
         }
     }
 }
