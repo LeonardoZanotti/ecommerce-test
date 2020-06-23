@@ -19,7 +19,7 @@ Route::post('registro', 'API\AuthController@registro')->name('registro');
 
 Route::get('arquivos/{arquivo}', 'API\ArquivoController@show');
 
-//CRUD PRODUTOS
+// CRUD PRODUTOS
 Route::get('Produtos', 'API\ProdutoController@index');
 Route::post('Produto', 'API\ProdutoController@show');
 
@@ -31,9 +31,9 @@ Route::middleware(['auth:api'])->group(function () {
         'show'
     ]);
 
-    //CRUD COMPRAS
-    Route::get('comprasIndex', 'API\CompraController@index');
+    // CRUD COMPRAS
     Route::post('comprasShow', 'API\CompraController@show');
+    Route::get('comprasIndex', 'API\CompraController@index');
     Route::post('minhasCompras', 'API\CompraController@userIndex');
 
     // PAGSEGURO
@@ -44,9 +44,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('reembolsarCompra', 'API\PagSeguroController@refund');
     Route::post('notificarCompra', 'API\PagSeguroController@notification');
 
+    // PICPAY
+    Route::post('novoPagamento', 'API\PicPayController@checkout');
+    Route::post('cancelarPagamento', 'API\PicPayController@cancel');
+    Route::post('notificarPagamento', 'API\PicPayController@notification');
 
     Route::middleware(['admin'])->group(function () {
-        //CRUD PRODUTOS
+        // CRUD PRODUTOS
         Route::post('novoProduto', 'API\ProdutoController@store');
         Route::post('atualizaProduto', 'API\ProdutoController@update');
         Route::post('deletaProduto', 'API\ProdutoController@destroy');

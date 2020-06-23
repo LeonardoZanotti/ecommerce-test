@@ -33,8 +33,9 @@ class CompraController extends BaseController
     static public function update($codigo, $autorizacao, $status)
     {
         $compra = Compra::all()->where('codigo', $codigo)->last();
-        if (!$compra)
+        if (!$compra) {
             return false;
+        }
 
         $compra->status = $status;
         $compra->autorizacao = $autorizacao;

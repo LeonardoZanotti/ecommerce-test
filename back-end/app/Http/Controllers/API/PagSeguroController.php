@@ -2,21 +2,20 @@
 
 // https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html?code=6EC41F9F91919A6774BA6F8B6F73EC41
 // User comprador de teste e fazer a compra
-// https://github.com/muvasco/picpay-php-sdk
 
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Exception;
 use PagSeguro\Library as PagSeguro;
 use PagSeguro\Configuration\Configure as PagSeguroConfig;
 use PagSeguro\Domains\Requests\Payment as Payment;
+use PagSeguro\Services\Transactions as Transactions;
 use App\User;
 use App\Produto;
-use PagSeguro\Services\Transactions as Transactions;
-use Illuminate\Support\Facades\Validator;
 
 try {
     PagSeguro::initialize();

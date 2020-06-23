@@ -16,7 +16,7 @@ class ProdutoController extends BaseController
             'descricao' => 'required|string',
             'preco' => 'required|numeric',
             'imagem' => 'required|file',
-            'peso' => 'numeric', // opcional, peso do item para calculo do frete
+            'peso' => 'numeric' // opcional, peso do item para calculo do frete
             // caso necessário filtrar métodos de pagamento, juros, descontos receber os parâmetros aqui
         ]);
 
@@ -44,7 +44,7 @@ class ProdutoController extends BaseController
             'descricao' => 'required|string',
             'preco' => 'required|numeric',
             'imagem' => 'file',
-            'peso' => 'numeric', // opcional, peso do item para calculo do frete
+            'peso' => 'numeric' // opcional, peso do item para calculo do frete
             // caso necessário filtrar métodos de pagamento, juros, descontos receber os parâmetros aqui
         ]);
 
