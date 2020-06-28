@@ -108,9 +108,9 @@
                 </template>
                 <template v-else-if="modoCriar === true">
                   <v-btn
+                    :disabled="!todosCamposPreenchidos"
                     depressed
                     color="primary"
-                    :disabled="!todosCamposPreenchidos"
                     @click="salvarCriacao"
                   >
                     Salvar
@@ -180,18 +180,18 @@
                 <v-flex
                   v-for="arquivo in resultadosFiltrados"
                   :key="arquivo.id"
-                  xs3
                   :sm2="!sidebarAberta"
                   :sm4="sidebarAberta"
                   :md2="!sidebarAberta"
                   :md3="sidebarAberta"
                   :lg1="!sidebarAberta"
                   :lg2="sidebarAberta"
-                  xl1
                   :class="{
                     'grid-item': true,
                     'sidebar-aberta': sidebarAberta
                   }"
+                  xs3
+                  xl1
                 >
                   <v-card
                     v-ripple

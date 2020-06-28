@@ -1,75 +1,60 @@
 <template>
-  <v-container>
-    <v-layout column justify-center align-center fill-height>
-      <p>
-        1) Olhem e pesquisem sobre a estrutura das Pastas NUXT antes de iniciar
-      </p>
-      <p>2) Utilizem o Vuetify, contém um monte de tags e scripts prontos</p>
-      <p>
-        3) Vejam os Projetos Antigos e se baseie neles Ex:. AfroCuritiba,
-        Humanidades
-      </p>
-      <p>
-        4) Para pegar dados do backend, pesquisem sobre AXIOS e vejam o modelo
-        abaixo de testes
-      </p>
-      <p>
-        5) Para remover o layout dessa página, removam o conteúdo do layout
-        DEFAULT
-      </p>
-      <p>
-        6) **Não hesitem em perguntar, somos todos ECOMP**
-      </p>
-      <h1>Resposta da api:</h1>
-      <p>
-        {{ dados }}
-      </p>
-      <v-btn color="primary" @click="callAPI">
-        Testar api com AXIOS
-      </v-btn>
-    </v-layout>
-  </v-container>
+  <div>
+    <banner />
+    <v-container>
+      <v-row mt-4>
+        <v-col
+          v-for="item in products"
+          :key="item.products"
+          cols="3"
+          class="ma-15"
+        >
+          <product
+            :produto-id="item.id"
+            :descricao="item.descricao"
+            :preco="item.preco"
+            :titulo="item.titulo"
+            :imagem="item.imagem"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
+import Banner from '../components/sections/Banner.vue'
+import Product from '../components/product/product.vue'
+
 export default {
-  // funcao que pega dados que vem do backend antes da pagina carregar
-  // o return dessa função é appended ao data da página
-  asyncData(context) {
-    return context.app.$axios.get('teste').then((res) => ({
-      dados: res.data ? res.data : 'Backend não retornou nenhum dado'
-    }))
-  },
-  // infos da página
+  components: { Banner, Product },
   head() {
     return {
-      title: 'Nome da página que aparece na aba no navegador',
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Página para ser usada como template para criar outras.'
-        }
-      ]
+      title: 'Payment Page'
     }
   },
-  // pega o layout que tem na pasta layout e joga nessa page, se não for especificado usa o layout default
-  layout: 'default',
-  // metodos do componente, vem com o metodo de testar api, apenas para demonstrar como fazer chamadas e pegar os dados
-  methods: {
-    callAPI() {
-      this.$nuxt.$loading.start()
-      this.$axios
-        .get('teste')
-        .then((response) => {
-          this.dados = response.data
-        })
-        .catch((response) => {
-          this.dados = response
-        })
-        .finally(() => {
-          this.$nuxt.$loading.finish()
-        })
+  data() {
+    return {
+      products: [],
+      quantity: '1',
+      codigo: ''
+    }
+  },
+  computed: {
+    productInfo() {
+      return this.products.map((p) => ({
+        id: p.id,
+        preco: p.preco,
+        imagem: p.imagem,
+        titulo: p.titulo,
+        descricao: p.descricao
+      }))
+    }
+  },
+  async asyncData({ $axios }) {
+    const [productsRes] = await Promise.all([$axios.get('/Produtos')])
+    return {
+      products: productsRes.data.dados
     }
   }
 }

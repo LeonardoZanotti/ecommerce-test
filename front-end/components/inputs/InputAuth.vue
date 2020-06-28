@@ -1,7 +1,7 @@
 <template>
   <v-text-field
-    class="tf"
     v-bind="$attrs"
+    class="tf"
     hide-details
     outline
     flat

@@ -70,7 +70,7 @@ export default {
               }
             })
             .then(() => {
-              this.$router.push('/dashboard')
+              this.$router.push('/sistema')
             })
             .catch(({ response }) => {
               const { mensagem2, errosSecundarios: erros } = response.data

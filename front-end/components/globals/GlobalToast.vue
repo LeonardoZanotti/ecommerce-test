@@ -1,10 +1,10 @@
 <template>
   <v-snackbar
     v-model="toast.visible"
-    bottom
-    left
     :timeout="toast.timeout"
     :color="toast.color"
+    bottom
+    left
   >
     {{ toast.text }}
     <v-btn
