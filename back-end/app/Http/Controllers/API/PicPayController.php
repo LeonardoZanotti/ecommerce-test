@@ -88,7 +88,7 @@ class PicPayController extends BaseController
             $cancelRequest = new CancelRequest($seller, $compra->codigo, $compra->autorizacao);
             $cancelResponse = $cancelRequest->execute();
 
-            return $this::enviarRespostaSucesso($cancelResponse, 'Pedido cancelado com sucesso!', 204);
+            return $this::enviarRespostaSucesso($cancelResponse, 'Pedido cancelado/reembolsado com sucesso!', 204);
         } catch (RequestException $e) {
             return $this::enviarRespostaErro($e->getErrors(), $e->getMessage(), $e->getCode());
         }    
