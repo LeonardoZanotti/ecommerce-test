@@ -35,7 +35,9 @@ nano .env
 
 php artisan key:generate
 
-php artisan migrate:fresh
+php artisan migrate:fresh --seed
+
+php artisan storage:link
 
 php artisan passport:install
 // talvez seja necessário usar um require antes com a versão do passport
@@ -54,13 +56,21 @@ npm audit fix
 npm run lint -- --fix
 
 npm run dev
-// O site estará em localhost:3000
+// o site estará em localhost:3000
+// dashboard: localhost:3000/dashboard
+// o login e senha são os do seeder 
 ```
 
 ### Testes
 Usei o [postman](https://www.postman.com/) para testar o projeto mas o [Insomnia](https://insomnia.rest/) também deve servir.
 
 ### Observações:
-* Essa API não considera os adicionais que o PagSeguro cobra por utilizar o método de pagamento 'boleto' ou por parcelar o pagamento via cartão de crédito.
+* A API do PagSeguro não considera os adicionais que o PagSeguro cobra por utilizar o método de pagamento 'boleto' ou por parcelar o pagamento via cartão de crédito.
+
+* A API do Picpay não foi testada pois é necessário baixar o app deles e efetuar uma compra real cadastrando o seu cartão de crédito para testar.
+
+* Eu não fiz o front-end, apenas o copiei pronto, portanto ele está com alguns problemas que não sei resolver (ainda) mas dá para cadastrar novos produtos e efetuar as transações através dele.
+
+* O front-end contempla apenas a API do PagSeguro.
 
 ## Leonardo Zanotti
